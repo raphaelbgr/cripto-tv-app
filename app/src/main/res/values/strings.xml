@@ -20,4 +20,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="vertical_grid_title"><![CDATA[Crypto Price App]]></string>
+    <string name="header_icon">Header icon</string>
+    <string name="bitcoin">Bitcoin</string>
 </resources>
