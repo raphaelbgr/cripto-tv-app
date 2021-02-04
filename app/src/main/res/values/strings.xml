@@ -24,4 +24,8 @@
     <string name="bitcoin">Bitcoin</string>
     <string name="last_updated_colon">Last updated</string>
     <string name="pref_key">tv_app_prefs</string>
+    <string name="price_usd">USD</string>
+    <string name="price_brl">BRL</string>
+    <string name="american_dollar">American Dollar</string>
+    <string name="brazillian_real">Brazilian Real</string>
 </resources>

@@ -40,7 +40,8 @@ class MainFragment : BrowseSupportFragment() {
         val gridHeader = HeaderItem(getString(R.string.bitcoin))
         val gridPresenter = GridItemContract(viewLifecycleOwner)
         val gridRowAdapter = ArrayObjectAdapter(gridPresenter)
-        gridRowAdapter.add(getString(R.string.bitcoin))
+        gridRowAdapter.add(getString(R.string.price_usd))
+        gridRowAdapter.add(getString(R.string.price_brl))
         val row = ListRow(gridHeader, gridRowAdapter)
         mCategoryRowAdapter.add(row)
     }

@@ -40,6 +40,7 @@ class GridItemContract(private val viewLifecycleOwner: LifecycleOwner) : Present
     }
 
     class TileViewHolder(private val binding: CryptoTileBinding) : ViewHolder(binding.root) {
+        private var mode: String = "price_usd"
         private var mStatusChecker: Runnable? = null
         private val mHandler = Handler()
 
@@ -52,14 +53,24 @@ class GridItemContract(private val viewLifecycleOwner: LifecycleOwner) : Present
                         binding.tvLastUpdated.context.getText(R.string.last_updated_colon),
                         PrettyTime().format(btc.lastUpdated)
                     )
-                val formatUs: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-                val formatBrl: NumberFormat = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
-                formatUs.currency = Currency.getInstance(Locale.US)
-                formatBrl.currency = Currency.getInstance(Locale("pt", "BR"))
-                val btcUsd: String = formatUs.format(btc.uSD?.buy)
-                val btcBrl: String = formatBrl.format(btc.bRL?.buy)
-                binding.tvPriceUsd.text = "$btcUsd USD"
-                binding.tvPriceBrl.text = "$btcBrl BRL"
+                val format: NumberFormat
+                var btcValue: String
+                when (mode) {
+                    "USD" -> {
+                        binding.tvTileTitle.text = view.context.getString(R.string.american_dollar)
+                        format = NumberFormat.getCurrencyInstance(Locale.US)
+                        format.currency = Currency.getInstance(Locale.US)
+                        btcValue = format.format(btc.uSD?.buy)
+                    }
+                    else -> {
+                        binding.tvTileTitle.text = view.context.getString(R.string.brazillian_real)
+                        format = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+                        format.currency = Currency.getInstance(Locale("pt", "BR"))
+                        btcValue = format.format(btc.bRL?.buy)
+                    }
+                }
+
+                binding.tvPrice.text = btcValue
                 showLoading(false)
             }
         }
@@ -88,10 +99,15 @@ class GridItemContract(private val viewLifecycleOwner: LifecycleOwner) : Present
         fun stopRepeatingTask() {
             mStatusChecker?.let { mHandler.removeCallbacks(it) }
         }
+
+        fun setMode(mode: String) {
+            this.mode = mode
+        }
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val tileHolder = (viewHolder as TileViewHolder)
+        tileHolder.setMode(item as String)
         val btcObserver = Observer<BitcoinPrices> { btc ->
             tileHolder.updateData(btc)
         }

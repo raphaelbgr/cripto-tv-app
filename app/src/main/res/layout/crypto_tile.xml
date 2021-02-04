@@ -28,30 +28,29 @@
         tools:text="@string/last_updated_colon" />
 
     <TextView
-        android:id="@+id/tv_price_usd"
+        android:id="@+id/tv_tile_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/tile_default_margin"
-        android:textSize="32sp"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.00"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:text="37,000.00 USD" />
+        tools:text="American Dollars" />
 
     <TextView
-        android:id="@+id/tv_price_brl"
+        android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/tile_default_margin"
         android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_last_updated"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.00"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_price_usd"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="200.000,00 BRL" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_tile_title"
+        tools:text="37,000.00 USD" />
 </androidx.constraintlayout.widget.ConstraintLayout>
