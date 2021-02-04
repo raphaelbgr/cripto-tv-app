@@ -22,4 +22,6 @@
     <string name="vertical_grid_title"><![CDATA[Crypto Price App]]></string>
     <string name="header_icon">Header icon</string>
     <string name="bitcoin">Bitcoin</string>
+    <string name="last_updated_colon">Last updated</string>
+    <string name="pref_key">tv_app_prefs</string>
 </resources>
