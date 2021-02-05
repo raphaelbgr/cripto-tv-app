@@ -28,4 +28,5 @@
     <string name="price_brl">BRL</string>
     <string name="american_dollar">American Dollar</string>
     <string name="brazillian_real">Brazilian Real</string>
+    <string name="etherum">Etherum</string>
 </resources>

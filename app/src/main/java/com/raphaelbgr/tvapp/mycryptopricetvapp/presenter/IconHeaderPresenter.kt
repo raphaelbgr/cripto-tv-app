@@ -29,8 +29,10 @@ class IconHeaderPresenter : RowHeaderPresenter() {
         val rootView = viewHolder.view
         rootView.isFocusable = true
         val iconView = rootView.findViewById<View>(R.id.header_icon) as ImageView
+        val iconRes =
+            if (headerItem.name == "Etherum") R.drawable.ic_ethereum_logo_wine else R.drawable.ic_bitcoin
         val icon =
-            ResourcesCompat.getDrawable(rootView.context.resources, R.drawable.ic_bitcoin, null)
+            ResourcesCompat.getDrawable(rootView.context.resources, iconRes, null)
         iconView.setImageDrawable(icon)
         val label = rootView.findViewById<View>(R.id.header_label) as TextView
         label.text = headerItem.name

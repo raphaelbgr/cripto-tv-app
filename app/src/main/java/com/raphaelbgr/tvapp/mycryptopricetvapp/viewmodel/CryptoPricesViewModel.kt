@@ -7,24 +7,57 @@ import androidx.lifecycle.viewModelScope
 import com.raphaelbgr.tvapp.mycryptopricetvapp.data.DataSource
 import com.raphaelbgr.tvapp.mycryptopricetvapp.data.LocalDataSource
 import com.raphaelbgr.tvapp.mycryptopricetvapp.data.NetworkDataSource
-import com.raphaelbgr.tvapp.mycryptopricetvapp.model.BitcoinPrices
+import com.raphaelbgr.tvapp.mycryptopricetvapp.data.apimodel.CoinPrice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CryptoPricesViewModel : ViewModel() {
 
-    val btcObservable: MutableLiveData<BitcoinPrices> by lazy {
-        MutableLiveData<BitcoinPrices>()
+    val btcObservable: MutableLiveData<CoinPrice> by lazy {
+        MutableLiveData<CoinPrice>()
+    }
+
+    val ethObservable: MutableLiveData<CoinPrice> by lazy {
+        MutableLiveData<CoinPrice>()
     }
 
     fun loadData() {
+        loadBtcData()
+        loadEtherumData()
+    }
+
+    private fun loadEtherumData() {
+        viewModelScope.launch {
+            val networkSource: DataSource = NetworkDataSource()
+            val localSource: DataSource = LocalDataSource()
+            var ethResult = withContext(Dispatchers.Default) {
+                networkSource.getEtherumPrices()
+            }
+            ethResult?.dollarPriceToBrl = localSource.getBrlToDollarExchangeRate() ?: 0.0
+            ethResult?.calculateBrlPrice()
+
+            if (ethResult == null) {
+                ethResult = withContext(Dispatchers.Default) {
+                    localSource.getEtherumPrices()
+                }
+            }
+            if (ethResult != null) {
+                localSource.saveEtherumPrices(ethResult)
+            }
+            this@CryptoPricesViewModel.ethObservable.postValue(ethResult)
+        }
+    }
+
+    private fun loadBtcData() {
         viewModelScope.launch {
             val networkSource: DataSource = NetworkDataSource()
             val localSource: DataSource = LocalDataSource()
             var btcResult = withContext(Dispatchers.Default) {
                 networkSource.getBitcoinPrices()
             }
+            localSource.saveBrlToDollarExchangeRate(btcResult?.dollarPriceToBrl)
+
             if (btcResult == null) {
                 btcResult = withContext(Dispatchers.Default) {
                     localSource.getBitcoinPrices()
@@ -32,16 +65,6 @@ class CryptoPricesViewModel : ViewModel() {
             }
             if (btcResult != null) {
                 localSource.saveBitcoinPrices(btcResult)
-            }
-            this@CryptoPricesViewModel.btcObservable.postValue(btcResult)
-        }
-    }
-
-    fun loadCachedData() {
-        viewModelScope.launch {
-            val localSource: DataSource = LocalDataSource()
-            val btcResult = withContext(Dispatchers.Default) {
-                localSource.getBitcoinPrices()
             }
             this@CryptoPricesViewModel.btcObservable.postValue(btcResult)
         }

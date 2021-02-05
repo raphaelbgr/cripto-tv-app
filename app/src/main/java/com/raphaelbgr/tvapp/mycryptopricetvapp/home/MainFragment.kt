@@ -5,7 +5,8 @@ import androidx.core.content.ContextCompat
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import com.raphaelbgr.tvapp.mycryptopricetvapp.R
-import com.raphaelbgr.tvapp.mycryptopricetvapp.presenter.GridItemContract
+import com.raphaelbgr.tvapp.mycryptopricetvapp.presenter.GridItemContractBitcoin
+import com.raphaelbgr.tvapp.mycryptopricetvapp.presenter.GridItemContractEtherum
 import com.raphaelbgr.tvapp.mycryptopricetvapp.presenter.IconHeaderPresenter
 
 class MainFragment : BrowseSupportFragment() {
@@ -38,11 +39,21 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun prepareRows() {
         val gridHeader = HeaderItem(getString(R.string.bitcoin))
-        val gridPresenter = GridItemContract(viewLifecycleOwner)
+        val gridHeaderEth = HeaderItem(getString(R.string.etherum))
+        val gridPresenter = GridItemContractBitcoin(viewLifecycleOwner)
+        val gridPresenterEtherum = GridItemContractEtherum(viewLifecycleOwner)
+
         val gridRowAdapter = ArrayObjectAdapter(gridPresenter)
         gridRowAdapter.add(getString(R.string.price_usd))
         gridRowAdapter.add(getString(R.string.price_brl))
+
+        val gridRowAdapterEtherum = ArrayObjectAdapter(gridPresenterEtherum)
+        gridRowAdapterEtherum.add(getString(R.string.price_usd))
+        gridRowAdapterEtherum.add(getString(R.string.price_brl))
+
         val row = ListRow(gridHeader, gridRowAdapter)
+        val row2 = ListRow(gridHeaderEth, gridRowAdapterEtherum)
         mCategoryRowAdapter.add(row)
+        mCategoryRowAdapter.add(row2)
     }
 }
