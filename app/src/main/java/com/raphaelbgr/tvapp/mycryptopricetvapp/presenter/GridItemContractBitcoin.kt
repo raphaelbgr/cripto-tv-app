@@ -26,6 +26,8 @@ import com.raphaelbgr.tvapp.mycryptopricetvapp.viewmodel.CryptoPricesViewModel
 
 class GridItemContractBitcoin(private val viewLifecycleOwner: LifecycleOwner) : Presenter() {
 
+    private lateinit var btcObserver: Observer<CoinPrice>
+
     override fun onCreateViewHolder(parent: ViewGroup): TileViewHolder {
         val binding = CryptoTileBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TileViewHolder(binding)
@@ -34,7 +36,7 @@ class GridItemContractBitcoin(private val viewLifecycleOwner: LifecycleOwner) : 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val tileHolder = (viewHolder as TileViewHolder)
         tileHolder.setMode(item as String)
-        val btcObserver = Observer<CoinPrice> { btc ->
+        btcObserver = Observer<CoinPrice> { btc ->
             tileHolder.updateData(btc)
         }
 
@@ -43,5 +45,7 @@ class GridItemContractBitcoin(private val viewLifecycleOwner: LifecycleOwner) : 
         tileHolder.startRepeatingTask()
     }
 
-    override fun onUnbindViewHolder(viewHolder: ViewHolder) {}
+    override fun onUnbindViewHolder(viewHolder: ViewHolder) {
+        CryptoPricesViewModel.get().btcObservable.removeObserver(btcObserver)
+    }
 }

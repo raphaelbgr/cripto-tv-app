@@ -38,12 +38,8 @@ class IconHeaderPresenter : RowHeaderPresenter() {
         label.text = headerItem.name
     }
 
-    override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {
-        // no op
-    }
+    override fun onUnbindViewHolder(viewHolder: Presenter.ViewHolder) {}
 
-    // TODO: This is a temporary fix. Remove me when leanback onCreateViewHolder no longer sets the
-    // mUnselectAlpha, and also assumes the xml inflation will return a RowHeaderView.
     override fun onSelectLevelChanged(holder: ViewHolder) {
         holder.view.alpha = mUnselectedAlpha + holder.selectLevel *
                 (1.0f - mUnselectedAlpha)
