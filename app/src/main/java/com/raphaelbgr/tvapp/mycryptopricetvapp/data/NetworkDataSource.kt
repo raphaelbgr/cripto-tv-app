@@ -20,23 +20,27 @@ class NetworkDataSource : DataSource {
     override fun getBitcoinPrices(): CoinPrice? {
         val json = getRawDataFromNetwork("https://blockchain.info/ticker")
         val data = Gson().fromJson(json, CoinPrice::class.java)
-        data.lastUpdated = Date()
-        data.calculateBrlPriceToDollar()
-        Timber.d(data.toString())
+        data?.lastUpdated = Date()
+        data?.calculateBrlPriceToDollar()
+        Timber.d(data?.toString())
         return data
     }
 
     override fun getEtherumPrices(): CoinPrice? {
-        val json =
-            JSONObject(getRawDataFromNetwork(urlString = "https://api.blockchain.com/v3/exchange/tickers/ETH-USD"))
-        val data = CoinPrice(
-            BRL(json.getDouble("last_trade_price")),
-            USD(json.getDouble("last_trade_price")),
-            Date(),
-            0.0
-        )
-        Timber.d(data.toString())
-        return data
+        try {
+            val json =
+                JSONObject(getRawDataFromNetwork(urlString = "https://api.blockchain.com/v3/exchange/tickers/ETH-USD"))
+            val data = CoinPrice(
+                BRL(json.getDouble("last_trade_price")),
+                USD(json.getDouble("last_trade_price")),
+                Date(),
+                0.0
+            )
+            Timber.d(data.toString())
+            return data
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     private fun getRawDataFromNetwork(urlString: String): String? {
