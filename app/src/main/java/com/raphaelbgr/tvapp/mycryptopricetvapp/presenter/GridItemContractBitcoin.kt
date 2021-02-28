@@ -42,6 +42,7 @@ class GridItemContractBitcoin(private val viewLifecycleOwner: LifecycleOwner) : 
 
         CryptoPricesViewModel.get().btcObservable.observe(viewLifecycleOwner, btcObserver)
 
+        tileHolder.stopRepeatingTask()
         tileHolder.startRepeatingTask()
     }
 

@@ -42,6 +42,7 @@ class GridItemContractEtherum(private val viewLifecycleOwner: LifecycleOwner) : 
 
         CryptoPricesViewModel.get().ethObservable.observe(viewLifecycleOwner, ethObserver)
 
+        tileHolder.stopRepeatingTask()
         tileHolder.startRepeatingTask()
     }
 

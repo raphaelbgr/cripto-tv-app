@@ -1,6 +1,7 @@
 package com.raphaelbgr.tvapp.mycryptopricetvapp.data
 
 import com.google.gson.Gson
+import com.raphaelbgr.tvapp.mycryptopricetvapp.TvApplication
 import com.raphaelbgr.tvapp.mycryptopricetvapp.data.apimodel.BRL
 import com.raphaelbgr.tvapp.mycryptopricetvapp.data.apimodel.CoinPrice
 import com.raphaelbgr.tvapp.mycryptopricetvapp.data.apimodel.USD
@@ -16,31 +17,49 @@ import javax.net.ssl.HttpsURLConnection
 class NetworkDataSource : DataSource {
 
     private val tag = NetworkDataSource::class.java.simpleName
+    private val urlProvider = TvApplication.urlProvider
 
-    override fun getBitcoinPrices(): CoinPrice? {
-        val json = getRawDataFromNetwork("https://blockchain.info/ticker")
+    override fun getBrlToDollarExchangeRate(): Double {
+        val json = getRawDataFromNetwork(urlProvider.usdToBrlUrl())
         val data = Gson().fromJson(json, CoinPrice::class.java)
         data?.lastUpdated = Date()
         data?.calculateBrlPriceToDollar()
         Timber.d(data?.toString())
-        return data
+        return data.dollarPriceToBrl
+    }
+
+    override fun getBitcoinPrices(): CoinPrice? {
+        val brlUsdRate = LocalDataSource().getBrlToDollarExchangeRate() ?: 0.0
+        val rawData =
+            getRawDataFromNetwork(urlProvider.btcUrl())
+        return if (rawData != null) {
+            val json = JSONObject(rawData)
+            val data = CoinPrice(
+                BRL(json.getDouble("last_trade_price") * brlUsdRate),
+                USD(json.getDouble("last_trade_price")),
+                Date(),
+                LocalDataSource().getBrlToDollarExchangeRate() ?: 0.0
+            )
+            Timber.d(data.toString())
+            data
+        } else null
     }
 
     override fun getEtherumPrices(): CoinPrice? {
-        try {
-            val json =
-                JSONObject(getRawDataFromNetwork(urlString = "https://api.blockchain.com/v3/exchange/tickers/ETH-USD"))
+        val brlUsdRate = LocalDataSource().getBrlToDollarExchangeRate() ?: 0.0
+        val rawData =
+            getRawDataFromNetwork(urlString = urlProvider.ethUrl())
+        return if (rawData != null) {
+            val json = JSONObject(rawData)
             val data = CoinPrice(
-                BRL(json.getDouble("last_trade_price")),
+                BRL(json.getDouble("last_trade_price") * brlUsdRate),
                 USD(json.getDouble("last_trade_price")),
                 Date(),
-                0.0
+                brlUsdRate
             )
             Timber.d(data.toString())
-            return data
-        } catch (e: Exception) {
-            return null
-        }
+            data
+        } else null
     }
 
     private fun getRawDataFromNetwork(urlString: String): String? {
@@ -77,7 +96,4 @@ class NetworkDataSource : DataSource {
     override fun saveBrlToDollarExchangeRate(dollarPriceToBrl: Double?) {}
     override fun saveBitcoinPrices(btc: CoinPrice?) {}
     override fun saveEtherumPrices(eth: CoinPrice?) {}
-    override fun getBrlToDollarExchangeRate(): Double {
-        return 0.0
-    }
 }

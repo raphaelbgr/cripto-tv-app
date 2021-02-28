@@ -27,7 +27,7 @@ class TileViewHolder(private val binding: CryptoTileBinding) : Presenter.ViewHol
                     PrettyTime().format(btc.lastUpdated)
                 )
             val format: NumberFormat
-            var btcValue: String
+            val btcValue: String
             when (mode) {
                 "USD" -> {
                     binding.tvTileTitle.text = view.context.getString(R.string.american_dollar)
